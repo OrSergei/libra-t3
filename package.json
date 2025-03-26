@@ -6,9 +6,15 @@
   "scripts": {
     "build": "next build",
     "check": "next lint && tsc --noEmit",
-    "db:generate": "prisma generate --schema=./prisma-libra/schema.prisma",
-    "db:migrate": "prisma migrate deploy",
+
     "db:push": "prisma db push --schema=./prisma-libra/schema.prisma",
+    "db:generate": "prisma generate --schema=./prisma-libra/schema.prisma",
+    "db:migrate": "prisma migrate deploy --schema=./prisma-libra/schema.prisma",
+
+    "db:start": "cd prisma && docker compose up",
+  
+
+    
     "db:studio": "prisma studio",
     "dev": "next dev --turbo",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
@@ -30,6 +36,7 @@
     "@trpc/server": "^11.0.0",
     "next": "^15.2.3",
     "next-auth": "5.0.0-beta.25",
+    "nodemailer": "^6.10.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "server-only": "^0.0.1",
@@ -40,6 +47,7 @@
     "@eslint/eslintrc": "^3.3.1",
     "@tailwindcss/postcss": "^4.0.15",
     "@types/node": "^20.14.10",
+    "@types/nodemailer": "^6.4.17",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "eslint": "^9.23.0",
