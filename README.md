@@ -34,5 +34,4 @@ Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 запуск 
 запустить контейнер(зайти в папку и докер компосе)
 pnpm dev
-
-Привет
+## Привет
