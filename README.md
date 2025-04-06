@@ -1,4 +1,4 @@
-# Create T3 App УЭЭЭЭЭЭЭЭЭЭЭЭЭЭЭЭЭЭЭЭЭЭЭЭ
+# Create T3 App СРЕГЕЙ, ВЫ ЭТО ВИДИТЕ сосал?
 
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
 
