@@ -11,7 +11,7 @@
     "db:generate": "prisma generate --schema=./prisma-libra/schema.prisma",
     "db:migrate": "prisma migrate deploy --schema=./prisma-libra/schema.prisma",
 
-    "db:start": "cd prisma && docker compose up",
+    "db:start": "cd prisma-libra && docker compose up",
   
 
     
