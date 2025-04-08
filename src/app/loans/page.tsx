@@ -2,13 +2,13 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "~/server/auth";
 
-export default async function LoansPage() {
+export default async function ReadersPage() {
   const session = await auth();
 
   if (!session?.user) {
     redirect("/");
   }
-
+  const isLibrarian = session.user.role === "LIBRARIAN";
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Шапка */}
@@ -21,34 +21,40 @@ export default async function LoansPage() {
                {/* Навигация */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
 
-          <Link
-            href="/books"
-            className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-md hover:border-indigo-300"
-          >
-            <h3 className="text-lg font-medium text-gray-900">Книги</h3>
-            {/* <p className="mt-2 text-gray-600">
-              Просмотр и управление каталогом книг
-            </p> */}
-          </Link>
+ {/* Кто зашел */}
+ <div className="mb-4 md:mb-0">
+                <h2 className="text-xl font-bold">
+                  {isLibrarian ? "Зашел библиотекарь" : "Зашел пользователь"}
+                </h2>
+              </div>
 
-          <Link
-            href="/readers"
-            className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-md hover:border-indigo-300"
-          >
-            <h3 className="text-lg font-medium text-gray-900">Читатели</h3>
-           
-          </Link>
+        <Link
+                href="/books"
+                className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-md hover:border-indigo-300"
+              >
+                <h3 className="text-lg font-medium text-gray-900">Книги</h3>
+              </Link>
 
-        
+              <Link
+                href="/readers"
+                className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-md hover:border-indigo-300"
+              >
+                <h3 className="text-lg font-medium text-gray-900">Читатели</h3>
+              </Link>
 
-          <Link
-            href="/profile"
-            className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-md hover:border-indigo-300"
-          >
-            <h3 className="text-lg font-medium text-gray-900">Профиль</h3>
-            
-          </Link>
+              {/* <Link
+                href="/loans"
+                className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-md hover:border-indigo-300"
+              >
+                <h3 className="text-lg font-medium text-gray-900">Выдачи</h3>
+              </Link> */}
 
+              <Link
+                href="/profile"
+                className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-md hover:border-indigo-300"
+              >
+                <h3 className="text-lg font-medium text-gray-900">Профиль</h3>
+              </Link>
          
         </div>
             <Link
@@ -60,17 +66,19 @@ export default async function LoansPage() {
             
           </div>
         </div>
-      </header> 
-
+      </header>
+      
       {/* Основное содержимое */}
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-            <h3 className="text-2xl font-bold text-gray-900">Аренда книг</h3>
+            <h3 className="text-2xl font-bold text-gray-900">Выдача</h3>
+            
 
         
 
       
       </main>
-     
+
+
     </div>
   );
 }
