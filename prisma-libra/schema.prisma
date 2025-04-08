@@ -42,7 +42,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
 
-  role          UserRole   @default(USER) // ⬅️ Вот это добавляем
+  role          UserRole   @default(USER) 
 }
 
 

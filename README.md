@@ -14,3 +14,8 @@ librarian@library.com
 Для остальных пользователй обычный логин
 
 задача на сегодня дать права просмотра каждым ролям 
+
+
+pnpx prisma studio --schema=./prisma-libra/schema.prisma
+для проверки призмы
+http://localhost:5555/
