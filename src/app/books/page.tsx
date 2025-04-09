@@ -2,8 +2,9 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "~/server/auth";
 import { getBooks } from "~/server/books/books"; // импортируем функцию для получения книг
-import { BookCard } from "~/components/BookCard";
+// import { BookCard } from "~/components/BookCard";
 import { AddBookForm } from "./components/AddBookForm";
+import { BookCard } from "~/components/BookCard";
 
 export default async function BooksPage() {
   const session = await auth();
@@ -79,7 +80,7 @@ export default async function BooksPage() {
       {books.length > 0 ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {books.map((book) => (
-            <BookCard key={book.id} book={book} />
+            <BookCard book={book} isLibrarian={isLibrarian} />
           ))}
         </div>
       ) : (
