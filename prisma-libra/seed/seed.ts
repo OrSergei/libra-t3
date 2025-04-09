@@ -14,18 +14,18 @@ async function main() {
   
   await prisma.book.createMany({
     data: [
-      {
-        title: '1984',
-        author: 'Джордж Оруэлл',
-        year: 1949,
-        description: 'Антиутопия о тоталитарном обществе'
+      { title: 'Книга 1',
+        author: 'Автор 1',
+        year: 2025,
+        description: 'Описание 1' 
       },
-      {
-        title: 'Мастер и Маргарита',
-        author: 'Михаил Булгаков',
-        year: 1966,
-        description: 'Роман о дьяволе в Москве'
-      }
+      { title: 'Книга 2', author: 'Автор 2', year: 2025, description: 'Описание 2' },
+      { title: 'Книга 3', author: 'Автор 3', year: 2025, description: 'Описание 3' },
+      { title: 'Книга 4', author: 'Автор 4', year: 2025, description: 'Описание 4' },
+      { title: 'Книга 5', author: 'Автор 5', year: 2025, description: 'Описание 5' },
+      { title: 'Книга 6', author: 'Автор 6', year: 2025, description: 'Описание 6' },
+      { title: 'Книга 7', author: 'Автор 7', year: 2025, description: 'Описание 7' }
+     
     ],
     skipDuplicates: true
   });

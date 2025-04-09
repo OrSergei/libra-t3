@@ -3,6 +3,7 @@ import Link from "next/link";
 import { auth } from "~/server/auth";
 import { getBooks } from "~/server/books/books"; // импортируем функцию для получения книг
 import { BookCard } from "~/components/BookCard";
+import { AddBookForm } from "./components/AddBookForm";
 
 export default async function BooksPage() {
   const session = await auth();
@@ -84,6 +85,9 @@ export default async function BooksPage() {
       ) : (
         <p className="text-gray-500">Книги не найдены</p>
       )}
+      
+      {isLibrarian && <AddBookForm />}
+      
 </main>
     </div>
   );
