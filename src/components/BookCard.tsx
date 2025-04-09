@@ -4,7 +4,7 @@ type Book = {
   id: number;
   title: string;
   author: string;
-  year?: number | null; // Делаем опциональным
+  year?: number | null;
   description?: string | null;
 };
 
@@ -17,12 +17,6 @@ export function BookCard({ book }: { book: Book }) {
       {book.description && (
         <p className="mt-2 text-gray-600">{book.description}</p>
       )}
-      <button
-        className="mt-4 inline-block rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-        onClick={() => alert(`Книга "${book.title}" добавлена`)}
-      >
-        Добавить книгу
-      </button>
     </div>
   );
 }
