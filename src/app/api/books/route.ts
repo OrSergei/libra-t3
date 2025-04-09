@@ -1,7 +1,22 @@
+// src/app/api/books/route.ts
 import { NextResponse } from 'next/server';
 import { db } from '~/server/db';
 import { auth } from '~/server/auth';
 
+// GET все книги
+export async function GET() {
+  try {
+    const books = await db.book.findMany();
+    return NextResponse.json(books);
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Failed to fetch books' },
+      { status: 500 }
+    );
+  }
+}
+
+// POST добавить книгу (только для библиотекарей)
 export async function POST(request: Request) {
   const session = await auth();
   if (!session?.user || session.user.role !== 'LIBRARIAN') {
@@ -9,14 +24,14 @@ export async function POST(request: Request) {
   }
 
   try {
-    const data = await request.json();
+    const body = await request.json();
     
     const book = await db.book.create({
       data: {
-        title: data.title,
-        author: data.author,
-        year: Number(data.year),
-        description: data.description || null,
+        title: body.title,
+        author: body.author,
+        year: Number(body.year),
+        description: body.description || null,
       },
     });
 
