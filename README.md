@@ -19,3 +19,8 @@ librarian@library.com
 pnpx prisma studio --schema=./prisma-libra/schema.prisma
 для проверки призмы
 http://localhost:5555/
+
+
+доделать возможность добавлять в профиль книгу 
+добавить возможность редактировать книгу
+просмотр книг с фильтрацией 
