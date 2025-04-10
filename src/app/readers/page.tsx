@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "~/server/auth";
+import { getUsers } from "~/server/users/users";
 
 export default async function ReadersPage() {
   const session = await auth();
@@ -9,7 +10,9 @@ export default async function ReadersPage() {
     redirect("/");
   }
 
+
   const isLibrarian = session.user.role === "LIBRARIAN";
+  const users = await getUsers();
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -72,6 +75,22 @@ export default async function ReadersPage() {
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <h3 className="text-2xl font-bold text-gray-900">Читатели</h3>
         {/* Тут можешь добавить отображение списка читателей */}
+
+
+        {users.length > 0 ? (
+         users.map((user) => (
+          <div>
+   
+          <p key={user.id}  className="font-semibold">ФИО</p> {user.name}
+    
+          <p className="font-semibold">Почта</p> {user.email}
+          
+          </div>
+         ))
+        ) : (
+          <p className="text-gray-500">Нет зарегистрированных пользователей</p>
+        )}
+
       </main>
     </div>
   );
