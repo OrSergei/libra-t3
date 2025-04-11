@@ -53,14 +53,9 @@ model Loan {
   bookId     Int
   user       User     @relation(fields: [userId], references: [id])
   userId     String
-  loanDate   DateTime @default(now())
-  dueDate    DateTime
-  returnDate DateTime?
+  loanDate   DateTime @default(now())  // Дата выдачи
+  dueDate    DateTime                  // Срок возврата
   status     LoanStatus @default(ACTIVE)
-  fine       Int      @default(0)
-  
-  @@index([bookId])
-  @@index([userId])
 }
 
 model Review {
