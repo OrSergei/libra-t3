@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "~/server/auth";
-import { getBooks } from "~/server/books/books"; // импортируем функцию для получения книг
+import { getBooks } from "~/server/books/books"; 
 // import { BookCard } from "~/components/BookCard";
 import { AddBookForm } from "./components/AddBookForm";
 import { BookCard } from "~/components/BookCard";
