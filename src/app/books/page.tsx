@@ -2,21 +2,27 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "~/server/auth";
 import { getBooks } from "~/server/books/books"; 
-// import { BookCard } from "~/components/BookCard";
 import { AddBookForm } from "./components/AddBookForm";
-import { BookCard } from "~/components/BookCard";
+import { BookCard } from "~/app/components/BookCard";
 
-export default async function BooksPage() {
+export default async function BooksPage({
+  searchParams,
+}: {
+  searchParams?: { q?: string };
+}) {
+  const searchTerm = searchParams?.q || '';
   const session = await auth();
-
-  if (!session?.user) {
-    redirect("/");
-  }
+  if (!session) redirect('/');
 
   const isLibrarian = session.user.role === "LIBRARIAN";
+  const allBooks = await getBooks();
 
-  // Получаем книги из базы данных
-  const books = await getBooks();
+
+  const filteredBooks = allBooks.filter(book => 
+    book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    book.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (book.year && book.year === parseInt(searchTerm, 10))
+  );
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -72,24 +78,40 @@ export default async function BooksPage() {
       </header>
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-  <div className="flex justify-between items-center mb-6">
-    <h3 className="text-2xl font-bold text-gray-900">Книги</h3>
-   
-  </div>
-{/*Добавление книг на страницу */}
-      {books.length > 0 ? (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {books.map((book) => (
-            <BookCard book={book} isLibrarian={isLibrarian} />
-          ))}
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-2xl font-bold text-gray-900">Книги</h3>
+
+          <form action="/books" method="GET" className="relative w-64">
+            <input
+              type="text"
+              name="q"
+              placeholder="Поиск по книгам..."
+              defaultValue={searchTerm}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <button 
+              type="submit" 
+              className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
+            >
+              🔍
+            </button>
+          </form>
         </div>
-      ) : (
-        <p className="text-gray-500">Книги не найдены</p>
-      )}
-      
-      {isLibrarian && <AddBookForm />}
-      
-</main>
+
+        {filteredBooks.length > 0 ? (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredBooks.map((book) => (
+              <BookCard key={book.id} book={book} isLibrarian={isLibrarian} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-500">
+            {searchTerm ? 'Ничего не найдено' : 'Книги не найдены'}
+          </p>
+        )}
+        
+        {isLibrarian && <AddBookForm />}
+      </main>
     </div>
   );
 }

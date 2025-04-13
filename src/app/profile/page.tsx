@@ -12,7 +12,7 @@ export default async function ProfilePage() {
 
   const isLibrarian = session.user.role === "LIBRARIAN";
 
-  // Получаем книги пользователя
+
   const userLoans = await db.loan.findMany({
     where: { 
       userId: session.user.id,
@@ -26,7 +26,7 @@ export default async function ProfilePage() {
     }
   });
 
-  // Функция для возврата книги (будет использована в клиентском компоненте)
+
   async function returnBook(loanId: number) {
     "use server";
     await db.loan.update({
@@ -41,7 +41,7 @@ export default async function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Шапка */}
+
       <header className="bg-white shadow">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center flex-wrap gap-4">
@@ -93,9 +93,9 @@ export default async function ProfilePage() {
         </div>
       </header>
 
-      {/* Основное содержимое */}
+  
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* Информация о пользователе */}
+ 
         <div className="mb-8 rounded-lg bg-white p-6 shadow">
           <div className="flex items-center space-x-4">
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100 text-indigo-800">
@@ -113,7 +113,7 @@ export default async function ProfilePage() {
           </div>
         </div>
 
-        {/* Взятые книги */}
+
         <div className="mb-8 rounded-lg bg-white p-6 shadow">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">
             Мои книги ({userLoans.length})
@@ -146,10 +146,10 @@ export default async function ProfilePage() {
           )}
         </div>
 
-        {/* Действия для библиотекаря */}
+  
         {isLibrarian && (
           <div className="rounded-lg bg-indigo-50 p-6">
-            <h3 className="text-lg font-medium text-indigo-800 mb-4">Действия библиотекаря</h3>
+ 
             <div className="flex space-x-4">
               <Link
                 href="/books/add"
