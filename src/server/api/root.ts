@@ -1,5 +1,10 @@
 
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
+import { BookRouter } from "./rooters/bookroute";
+
+import {loanRouter} from "./rooters/loanroute"
+import { userRouter } from "./rooters/userrouter";
+import {readerRouter} from "./rooters/readersroute"
 
 /**
  * This is the primary router for your server.
@@ -8,6 +13,14 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
  */
 export const appRouter = createTRPCRouter({
 
+    /*тут трсп  */
+    book: BookRouter,
+    loan: loanRouter,
+    user: userRouter,
+    reader: readerRouter
+
+
+    
 });
 
 // export type definition of API

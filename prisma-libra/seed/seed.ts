@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient({
   datasources: {
     db: {
-      url: process.env.DATABASE_URL // Явно указываем путь к схеме
+      url: "postgresql://postgres:postgres@localhost:5432/libra_db"
     }
   }
 });
@@ -41,3 +41,21 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
+
+
+
+
+    /*
+  D:\PP\libra-t3\libra\src\server\api\rooters
+  сперва создать роутер 
+  передать в root 
+
+
+  создать компонент с сервеной если нужна ссесия 
+
+  для изменения данных используеются мутация 
+
+  для просмотра можно и qeury 
+  
+  
+  */

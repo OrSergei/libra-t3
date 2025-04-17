@@ -9,10 +9,7 @@
     "db:push": "prisma db push --schema=./prisma-libra/schema.prisma",
     "db:generate": "prisma generate --schema=./prisma-libra/schema.prisma",
     "db:migrate": "prisma migrate deploy --schema=./prisma-libra/schema.prisma",
-    
-    
     "seed": "esno prisma-libra/seed/seed.ts",
-    
     "db:start": "cd prisma-libra && docker compose up",
     "db:studio": "prisma studio",
     "dev": "next dev --turbo",
@@ -24,7 +21,6 @@
     "preview": "next build && next start",
     "start": "next start",
     "typecheck": "tsc --noEmit"
-
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.2",
@@ -36,6 +32,7 @@
     "@trpc/react-query": "^11.0.0",
     "@trpc/server": "^11.0.0",
     "bcrypt": "^5.1.1",
+    "bcryptjs": "^3.0.2",
     "next": "^15.2.3",
     "next-auth": "5.0.0-beta.25",
     "nodemailer": "^6.10.0",

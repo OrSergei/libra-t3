@@ -1,7 +1,11 @@
 'use client';
 
+
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { api } from '~/trpc/react'; 
+
+
 
 type Book = {
   id: number;
@@ -11,70 +15,72 @@ type Book = {
   description?: string | null;
 };
 
-export function BookCard({ book, isLibrarian }: { book: Book; isLibrarian: boolean }) {
+export function BookCard({ book,  refetch }: { book: Book; refetch: () => void }) {
+
+  
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
+    id: book.id,
     title: book.title,
     author: book.author,
-    year: book.year?.toString() || '',
+    year: book.year || null ,
     description: book.description || ''
   });
 
+
+  
+const createMutation = api.loan.create.useMutation({
+  onSuccess: () => {
+    alert('Книга добавлена в ваш профиль!');
+    refetch();
+  },
+});
+
+const deleteMutation = api.book.delete.useMutation({
+  onSuccess: () => {
+    alert('Книга удалена!');
+    refetch();
+  },
+});
+
+const updateMutation = api.book.update.useMutation({
+  onSuccess: () => {
+    alert('Книга обновлена!');
+    refetch();
+  },
+});
+
+
   // Удаление книги
   const handleDelete = async () => {
-    if (!confirm(`Удалить "${book.title}"?`)) return;
-    try {
-      await fetch(`/api/books/${book.id}`, { method: 'DELETE' });
-      router.refresh();
-    } catch (error) {
-      alert('Не удалось удалить книгу');
-    }
+
+    await deleteMutation.mutateAsync({ id: formData.id });
   };
 
   // Редактирование книги
   const handleEditSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // Важно: предотвращаем перезагрузку страницы
+    
     try {
-      const response = await fetch(`/api/books/${book.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: formData.title,
-          author: formData.author,
-          year: formData.year ? parseInt(formData.year) : null,
-          description: formData.description
-        })
-      });
-      
-      if (!response.ok) throw new Error();
-      
-      setIsEditing(false);
-      router.refresh();
+      await updateMutation.mutateAsync(formData);
+      setIsEditing(false); // Выходим из режима редактирования после успеха
     } catch (error) {
-      alert('Не удалось обновить книгу');
+      console.error("Ошибка при обновлении книги:", error);
+      alert("Не удалось обновить книгу");
     }
   };
 
   // Взять книгу
   const handleBorrow = async () => {
-    try {
-      const response = await fetch('/api/loans', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ bookId: book.id }),
-      });
-      if (!response.ok) throw new Error();
-      alert('Книга добавлена в ваш профиль!');
-      router.refresh();
-    } catch (error) {
-      alert('Не удалось взять книгу');
-    }
+
+    await createMutation.mutateAsync({ id: formData.id });
+    
   };
 
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition-all relative">
-      {isLibrarian && (
+      {/* {isLibrarian && ( */}
         <div className="absolute top-2 right-2 flex gap-2">
           <button
             onClick={() => setIsEditing(!isEditing)}
@@ -91,7 +97,7 @@ export function BookCard({ book, isLibrarian }: { book: Book; isLibrarian: boole
             🗑️
           </button>
         </div>
-      )}
+      {/* )} */}
 
       {isEditing ? (
         <form onSubmit={handleEditSubmit} className="space-y-3">
@@ -109,13 +115,16 @@ export function BookCard({ book, isLibrarian }: { book: Book; isLibrarian: boole
             className="w-full border p-2 rounded"
             required
           />
-          <input
+         <input
             type="number"
-            value={formData.year}
-            onChange={(e) => setFormData({...formData, year: e.target.value})}
+            value={formData.year ?? ''} 
+            onChange={(e) => setFormData({
+              ...formData, 
+              year: e.target.value ? parseInt(e.target.value) : null
+            })}
             className="w-full border p-2 rounded"
             placeholder="Год издания"
-          />
+          />    
           <textarea
             value={formData.description}
             onChange={(e) => setFormData({...formData, description: e.target.value})}
@@ -136,14 +145,14 @@ export function BookCard({ book, isLibrarian }: { book: Book; isLibrarian: boole
           {book.year && <p className="text-gray-700">Год: {book.year}</p>}
           {book.description && <p className="mt-2 text-gray-600">{book.description}</p>}
 
-          {!isLibrarian && (
+          {/* {!isLibrarian && ( */}
             <button
               onClick={handleBorrow}
               className="mt-4 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
             >
               Взять книгу
             </button>
-          )}
+       
         </>
       )}
     </div>
