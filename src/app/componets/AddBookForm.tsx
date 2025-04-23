@@ -2,17 +2,37 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { api } from '~/trpc/react';
 
-export function AddBookForm() {
+export function AddBookForm({refetch}:{refetch:()=> void }) {
   const router = useRouter();
   const [formData, setFormData] = useState({
     title: '',
     author: '',
     year: '',
     description: ''
+    
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Инициализация мутации tRPC
+  const createBook = api.book.create.useMutation({
+    
+    onSuccess: () => {
+      // Очищаем форму после успешного добавления
+      setFormData({
+        title: '',
+        author: '',
+        year: '',
+        description: ''
+      });
+    refetch()
+    },
+    onError: (err) => {
+      setError(err.message);
+    },
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -25,35 +45,14 @@ export function AddBookForm() {
     setError('');
 
     try {
-      const response = await fetch('/api/books', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: formData.title,
-          author: formData.author,
-          year: Number(formData.year),
-          description: formData.description
-        }),
+      await createBook.mutateAsync({
+        title: formData.title,
+        author: formData.author,
+        year: Number(formData.year),
+        description: formData.description
       });
-
-      if (!response.ok) {
-        throw new Error('Ошибка при добавлении книги');
-      }
-
-      // Очищаем форму
-      setFormData({
-        title: '',
-        author: '',
-        year: '',
-        description: ''
-      });
-
-      // Обновляем список книг без перезагрузки страницы
-      router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Неизвестная ошибка');
+      // Ошибка уже обрабатывается в onError
     } finally {
       setIsLoading(false);
     }
@@ -101,10 +100,10 @@ export function AddBookForm() {
       />
       <button
         type="submit"
-        disabled={isLoading}
+        disabled={isLoading || createBook.isPending}
         className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 disabled:opacity-50"
       >
-        {isLoading ? 'Добавление...' : 'Добавить книгу'}
+        {isLoading || createBook.isPending ? 'Добавление...' : 'Добавить книгу'}
       </button>
     </form>
   );
