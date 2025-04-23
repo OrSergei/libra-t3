@@ -3,6 +3,7 @@ import Link from "next/link";
 import { auth } from "~/server/auth";
 // import { getUsers } from "~/server/users/users";
 import {ReadsShow} from "~/app/componets/ReadersShow"
+import { ReadersWithLoans } from "~/app/componets/BookShow";
 
 export default async function ReadersPage() {
   const session = await auth();
@@ -25,6 +26,7 @@ export default async function ReadersPage() {
         <h3 className="text-2xl font-bold text-gray-900">Читатели</h3>
 
         <ReadsShow/>
+        <ReadersWithLoans/>
 
       </main>
     </div>

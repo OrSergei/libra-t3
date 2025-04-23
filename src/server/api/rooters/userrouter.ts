@@ -11,7 +11,8 @@ export const userRouter = createTRPCRouter({
           id: true,
           name: true,
           email: true,
-          role: true
+          role: true,
+          loan_sum: true
         }
       });
     }),
@@ -29,7 +30,7 @@ export const userRouter = createTRPCRouter({
         },
         select: {
           id: true,
-          name: true
+          name: true,
         }
       });
     }),

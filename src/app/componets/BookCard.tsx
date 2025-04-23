@@ -1,11 +1,11 @@
 'use client';
 
-
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { api } from '~/trpc/react'; 
-
-
+import { ReviewBook } from './ReviewBook';
+import Link from 'next/link';
+import { UserRole } from '@prisma/client';
 
 type Book = {
   id: number;
@@ -15,9 +15,12 @@ type Book = {
   description?: string | null;
 };
 
-export function BookCard({ book,  refetch }: { book: Book; refetch: () => void }) {
+export function BookCard({ role, book,  refetch }: { role: UserRole, book: Book; refetch: () => void }) {
 
-  
+  const [isReview, setIsReview] = useState(false);
+
+    const [error, setError] = useState<string | null>(null);
+
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -29,12 +32,17 @@ export function BookCard({ book,  refetch }: { book: Book; refetch: () => void }
   });
 
 
-  
 const createMutation = api.loan.create.useMutation({
   onSuccess: () => {
     alert('Книга добавлена в ваш профиль!');
     refetch();
+    
   },
+  onError: (err) => { 
+    setError(err.message);
+    
+  },
+  
 });
 
 const deleteMutation = api.book.delete.useMutation({
@@ -42,6 +50,11 @@ const deleteMutation = api.book.delete.useMutation({
     alert('Книга удалена!');
     refetch();
   },
+  onError: (err) => { 
+    setError(err.message);
+    
+  },
+  
 });
 
 const updateMutation = api.book.update.useMutation({
@@ -49,19 +62,29 @@ const updateMutation = api.book.update.useMutation({
     alert('Книга обновлена!');
     refetch();
   },
+  onError: (err) => { 
+    setError(err.message);
+    
+  },
+  
 });
+
+const handleAddReview = () => {
+  setIsReview(!isReview);
+
+};
 
 
   // Удаление книги
   const handleDelete = async () => {
-
+    setError(null);
     await deleteMutation.mutateAsync({ id: formData.id });
   };
 
   // Редактирование книги
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Важно: предотвращаем перезагрузку страницы
-    
+    setError(null);
     try {
       await updateMutation.mutateAsync(formData);
       setIsEditing(false); // Выходим из режима редактирования после успеха
@@ -73,14 +96,16 @@ const updateMutation = api.book.update.useMutation({
 
   // Взять книгу
   const handleBorrow = async () => {
-
+    setError(null);
     await createMutation.mutateAsync({ id: formData.id });
     
   };
 
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition-all relative">
-      {/* {isLibrarian && ( */}
+      {error && <p className="text-red-500">{error}</p>}
+
+      { role == UserRole.LIBRARIAN &&
         <div className="absolute top-2 right-2 flex gap-2">
           <button
             onClick={() => setIsEditing(!isEditing)}
@@ -97,7 +122,10 @@ const updateMutation = api.book.update.useMutation({
             🗑️
           </button>
         </div>
-      {/* )} */}
+      }
+      
+
+      
 
       {isEditing ? (
         <form onSubmit={handleEditSubmit} className="space-y-3">
@@ -137,6 +165,7 @@ const updateMutation = api.book.update.useMutation({
           >
             Сохранить
           </button>
+         
         </form>
       ) : (
         <>
@@ -154,7 +183,30 @@ const updateMutation = api.book.update.useMutation({
             </button>
        
         </>
+        
       )}
+
+     <button onClick={() => router.push (`/books/${book.id}`) } className="mt-4 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+
+         Посмотреть отзывы
+        </button>
+                
+      <button
+      onClick={handleAddReview} className="mt-4 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+
+        { isReview ?   'скрыть отзыв': 'Добавить отзыв ' }
+      
+      </button>
+    
+      {  isReview && 
+        <ReviewBook bookId={book.id} />
+      
+      }
+
+  
+         
+ 
     </div>
+    
   );
 }

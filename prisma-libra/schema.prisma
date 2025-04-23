@@ -37,6 +37,8 @@ model User {
 
   password      String? 
 
+  loan_sum      Int        @default(0)
+
   createdAt     DateTime   @default(now())
   loans         Loan[]
   reviews       Review[]
@@ -45,6 +47,8 @@ model User {
 
   role          UserRole   @default(USER) 
    @@map("users")
+
+
 }
 
 
@@ -57,6 +61,14 @@ model Loan {
   loanDate   DateTime @default(now())  // Дата выдачи
   dueDate    DateTime                  // Срок возврата
   status     LoanStatus @default(ACTIVE)
+  
+  penaltyStatus  PenaltyStatus @default(NO_FINE)
+}
+
+enum PenaltyStatus {
+  ACTIVE // книга в долгах чувак в розыске
+  PAID // оплатил
+  NO_FINE //нет долгов
 }
 
 model Review {
@@ -70,6 +82,8 @@ model Review {
   createdAt DateTime @default(now())
   
   @@index([bookId])
+
+  @@unique([bookId, userId]) 
 }
 
 enum LoanStatus {
@@ -113,3 +127,5 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+

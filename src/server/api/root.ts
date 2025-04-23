@@ -5,6 +5,9 @@ import { BookRouter } from "./rooters/bookroute";
 import {loanRouter} from "./rooters/loanroute"
 import { userRouter } from "./rooters/userrouter";
 import {readerRouter} from "./rooters/readersroute"
+import { reviewRouter } from "./rooters/bookReviewsroute";
+import { showRouter } from "./rooters/bookShowroute";
+import { paidUserRouter } from "./rooters/paidBooksroute";
 
 /**
  * This is the primary router for your server.
@@ -17,9 +20,14 @@ export const appRouter = createTRPCRouter({
     book: BookRouter,
     loan: loanRouter,
     user: userRouter,
-    reader: readerRouter
+    reader: readerRouter,
+    reviews: reviewRouter,
+
+    show: showRouter,
+    payments: paidUserRouter,
 
 
+    
     
 });
 

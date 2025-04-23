@@ -129,11 +129,8 @@ export default async function ProfilePage() {
 
   return (
     <main>
-    <ProfileClient 
-        // user={session.user} 
-        
-      />
+      <ProfileClient />
+      
     </main>
-  
   );
 }

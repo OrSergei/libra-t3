@@ -62,4 +62,34 @@ export const readerRouter = createTRPCRouter({
         totalActiveLoans: user._count.loans
       }));
     }),
+
+    updateReader: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string().min(1).optional(),
+        email: z.string().email().optional()
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const updatedUser = await ctx.db.user.update({
+        where: { id: input.id },
+        data: {
+          name: input.name,
+          email: input.email
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true
+        }
+      });
+
+      return {
+        success: true,
+        message: 'Данные читателя обновлены',
+        user: updatedUser
+      };
+    }),
 });

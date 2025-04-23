@@ -1,13 +1,16 @@
 'use client';
 
 import Link from "next/link";
+import router from "next/router";
 import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
+import LoanPayment from "./LoanPayment";
 
 interface User {
   id: string;
   name: string | null;
   email: string | null;
+  loan_sum: number;
   role?: "USER" | "LIBRARIAN";
 }
 
@@ -37,13 +40,24 @@ export default function ProfileClient() {
   const { data: user , refetch } = api.user.getCurrentUser.useQuery();
   const { data: loans= [] , refetch: refetchLoan } = api.loan.getUserLoans.useQuery();
   const [isEditingName, setIsEditingName] = useState(false);
-const [newName, setNewName] = useState(user?.name || '');
+  const [newName, setNewName] = useState(user?.name || '');
+
+  const[isQROpen, setIsQROpen] = useState(false)
+
+  const loanMutation = api.loan.payDebt.useMutation({
+    onSuccess: () => {
+      alert('Долг оплачен!');
+      refetch();
+    },
+  });
 
   const returnMutation = api.loan.returnBook.useMutation({
     onSuccess: () => {
       alert('Книга возвращена!');
+      refetchLoan();
       refetch();
     },
+    
   });
 
   const updateMutation = api.user.updateName.useMutation({
@@ -62,7 +76,19 @@ const [newName, setNewName] = useState(user?.name || '');
 
   function handleReturnBook(loanId: number) {
     returnMutation.mutate({ loanId });
+    
   }
+
+  function handlePayLoan() {
+    loanMutation.mutate();
+  }
+
+  //обновление при заходе на страницу
+  useEffect(() => {
+    refetchLoan(); 
+    refetch();
+  }, []);
+
 
   if(!user){
     return (
@@ -120,16 +146,23 @@ const [newName, setNewName] = useState(user?.name || '');
                   ✏️
                 </button>
               </>
-            )}
-       
+            )}            
               <p className="text-gray-600">Почта: {user.email!}</p>
-              {/* {user.role && (
-                <p className="text-gray-600">Роль: {isLibrarian ? "Библиотекарь" : "Читатель"}</p>
-              )} */}
+              {user.loan_sum !== 0 && (
+                <div>
+                <p className="text-red-15600 bg-blue-500 text-white font-semibold py-2 px-4 rounded shadow-md hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105"
+                > Долг: {user.loan_sum} Р</p>
+                <button onClick={() => { setIsQROpen(!isQROpen) }} className="mt-4 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Создать QR для оплаты</button>
+                { isQROpen && <LoanPayment onClick={handlePayLoan} userId={user.id} loan_sum={user.loan_sum} /> }
+    
+                </div>
+
+              )}
             </div>
           </div>
         </div>
-      {/* Список книг */}
+      {/* Спис
+        ок книг */}
       <div className="mb-8 rounded-lg bg-white p-6 shadow">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
                   Мои книги ({loans.length})
@@ -161,19 +194,7 @@ const [newName, setNewName] = useState(user?.name || '');
                 )}
               </div>
 
-        {/* Панель библиотекаря */}
-        {/* {isLibrarian && ( */}
-          <div className="rounded-lg bg-indigo-50 p-6">
-            <div className="flex space-x-4">
-              <Link
-                href="/books/add"
-                className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
-              >
-                Добавить книгу
-              </Link>
-            </div>
-          </div>
-        {/* )} */}
+ 
       </main>
     </div>
   );

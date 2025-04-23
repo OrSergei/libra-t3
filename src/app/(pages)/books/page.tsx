@@ -8,6 +8,7 @@ import { api } from "~/trpc/react";
 import { BookCard } from "~/app/componets/BookCard";
 import { BookList } from "~/app/componets/BookList";
 import { AddBookForm } from "~/app/componets/AddBookForm";
+import { ReviewBook } from "~/app/componets/ReviewBook";
 
 export default async function BooksPage() {
   // const searchTerm = searchParams?.q || '';
@@ -20,8 +21,6 @@ export default async function BooksPage() {
 
   return (
     <main>
-{/* <BookList searchTerm={searchTerm}/> */}
-<BookList/>
+      <BookList role={session.user.role} />
     </main>
-
   )}

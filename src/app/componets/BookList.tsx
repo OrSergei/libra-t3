@@ -3,9 +3,10 @@ import { useSearchParams } from "next/navigation";
 import { BookCard } from "~/app/componets/BookCard";
 import { api } from "~/trpc/react";
 import { AddBookForm } from "./AddBookForm";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { UserRole } from "@prisma/client";
 
-export function BookList() {
+export function BookList({ role }: { role: UserRole }) {
   const searchParams = useSearchParams();
 
   const title = searchParams.get("title") || undefined;
@@ -13,7 +14,8 @@ export function BookList() {
   const yearParam = searchParams.get("year");
   const year = yearParam ? parseInt(yearParam) : undefined;
 
-  const { data: allBooks = [], refetch } = api.book.getAll.useQuery({
+ 
+  const { data: allBooks = [], refetch, error: booksError } = api.book.getAll.useQuery({
     
     title,
     author,
@@ -29,10 +31,6 @@ export function BookList() {
   // ,[]
   // )
 
-
-
-
-
   return (
     
     <div className="min-h-screen bg-gray-100">
@@ -40,7 +38,7 @@ export function BookList() {
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-2xl font-bold text-gray-900">Книги</h3>
 
-          
+          {booksError && <p className="text-red-500">{booksError.message}</p>}
           
           <form action="/books" method="GET" className="flex gap-2 items-end">
             <div>
@@ -79,13 +77,13 @@ export function BookList() {
             
           </form>
         </div>
-        <AddBookForm
-          refetch={refetch}/>
+
+        { role == UserRole.LIBRARIAN && <AddBookForm refetch={refetch}/> }
 
         {allBooks.length > 0 ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {allBooks.map((book) => (
-              <BookCard key={book.id} book={book} refetch={refetch} />
+              <BookCard role={role} key={book.id} book={book} refetch={refetch} />
             ))}
           </div>
         ) : (
