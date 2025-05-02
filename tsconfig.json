@@ -37,7 +37,8 @@
     "**/*.tsx",
     "**/*.cjs",
     "**/*.js",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "vitest.config.ts"
 , "src/app/(pages)/loansData/[id]"  ],
   "exclude": ["node_modules"]
 }

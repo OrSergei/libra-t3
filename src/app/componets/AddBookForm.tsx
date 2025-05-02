@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { api } from '~/trpc/react';
+import { api } from '../../trpc/react';
 
 export function AddBookForm({refetch}:{refetch:()=> void }) {
   const router = useRouter();
@@ -59,7 +59,7 @@ export function AddBookForm({refetch}:{refetch:()=> void }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-8 bg-white p-6 rounded-lg shadow-md space-y-4 max-w-xl">
+    <form onSubmit={handleSubmit} className="mb-8 bg-white p-6 rounded-lg shadow-md space-y-4 max-w-xl" data-testid="add-book-form">
       <h4 className="text-xl font-semibold">Добавить новую книгу</h4>
       
       {error && <div className="text-red-500">{error}</div>}

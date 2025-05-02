@@ -2,7 +2,7 @@
 import { on } from 'events';
 import { useState } from 'react';
 import { set } from 'zod';
-import { api } from "~/trpc/react";
+import { api } from "../../trpc/react";
 
 export function ReviewBook({ bookId }: { bookId: number }) {
   const [rating, setRating] = useState<number>(5); // Текущий рейтинг (1-5)
