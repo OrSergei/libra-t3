@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { api } from '~/trpc/react'; 
+import { api } from '../../trpc/react'; 
 import { ReviewBook } from './ReviewBook';
 import Link from 'next/link';
 import { UserRole } from '@prisma/client';

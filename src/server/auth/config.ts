@@ -3,9 +3,6 @@ import type { $Enums } from "@prisma/client";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
 import EmailProvider from "next-auth/providers/nodemailer";
 import { sendVerificationRequest } from "~/app/mailers/auth-mailer";
-
-
-
 import { db } from "~/server/db";
 
 /**
@@ -18,15 +15,9 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
-      // ...other properties
       role: $Enums.UserRole
     } & DefaultSession["user"];
   }
-
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
 }
 
 /**
@@ -41,16 +32,29 @@ export const authConfig = {
       from: process.env.EMAIL_FROM,
       sendVerificationRequest: sendVerificationRequest,
     })
-  
   ],
   adapter: PrismaAdapter(db),
+  session: {
+    strategy: "jwt"
+  },
   callbacks: {
-    session: ({ session, user }) => ({
+    session: ({ session, token }) => ({
       ...session,
       user: {
         ...session.user,
-        id: user.id,
+        id: token.sub,
+        role: token.role as $Enums.UserRole
       },
     }),
+    jwt: ({ token, user }) => {
+      if (user) {
+        token.role = user.role;
+      }
+      return token;
+    }
   },
+  pages: {
+    signIn: '/auth/signin',
+    error: '/auth/error',
+  }
 } satisfies NextAuthConfig;
