@@ -50,18 +50,19 @@ export const BookRouter = createTRPCRouter({
       await db.loan.deleteMany({
         where: { bookId: input.id },
       });
-      // Проверка роли LIBRARIAN
-      // if (ctx.session.user.role !== 'LIBRARIAN') {
-      //   throw new Error('Unauthorized');
-      // }
 
-       // Теперь можно удалить книгу
-    await db.book.delete({
-      where: { id: input.id },
-    });
+      // Удаляем все отзывы, связанные с книгой
+      await db.review.deleteMany({
+        where: { bookId: input.id },
+      });
 
-    return { success: true };
-  }),
+      // Теперь можно удалить книгу
+      await db.book.delete({
+        where: { id: input.id },
+      });
+
+      return { success: true };
+    }),
 
   update: protectedProcedure
     .input(z.object({
